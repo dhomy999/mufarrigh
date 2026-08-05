@@ -46,3 +46,7 @@ next-env.d.ts
 
 # ffmpeg sidecar (تُجلب عبر scripts/fetch-ffmpeg.mjs — لا تُلتزم في المستودع)
 /src-tauri/binaries/
+
+# مفاتيح توقيع التحديث — شبكة أمان؛ المفتاح الخاص يُحفظ خارج المستودع أصلاً
+*.key
+!*.key.pub

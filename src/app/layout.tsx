@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
+import UpdateManager from "@/components/UpdateManager";
 
 // خط Cairo العربي — يدعم العربية واللاتينية بكفاءة
 const cairo = Cairo({
@@ -11,8 +12,8 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "محرر الفيديو العربي",
-  description: "تحرير الفيديو عبر النص — مخصص للغة العربية",
+  title: "المفرِّغ",
+  description: "تفريغ المحاضرات العربية وتحريرها بالنصّ",
 };
 
 export default function RootLayout({
@@ -28,6 +29,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">
         {children}
+        <UpdateManager />
       </body>
     </html>
   );

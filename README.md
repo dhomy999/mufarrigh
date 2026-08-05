@@ -64,6 +64,37 @@ npm run tauri build
 
 ---
 
+## إصدار نسخة جديدة
+
+التطبيق يحدّث نفسه هوائياً: يقرأ `latest.json` من آخر release على GitHub، وإن وجد إصداراً أحدث عرض على المستخدم تنزيله وتثبيته، ثم أظهر له «ما الجديد» بعد إعادة التشغيل.
+
+**خطوات الإصدار:**
+
+1. ارفع رقم الإصدار في ثلاثة مواضع معاً: `package.json` و`src-tauri/tauri.conf.json` و`src-tauri/Cargo.toml`.
+2. أضف مدخلاً للإصدار في `src/lib/changelog.ts` — هذا ما يراه المستخدم في نافذة «ما الجديد».
+3. ابنِ **مع مفتاح التوقيع** في البيئة:
+
+   ```bash
+   export TAURI_SIGNING_PRIVATE_KEY="$(cat ~/.tauri/mufarrigh-updater.key)"
+   export TAURI_SIGNING_PRIVATE_KEY_PASSWORD=""
+   npm run tauri build
+   ```
+
+   > المتغيّر يأخذ **محتوى** المفتاح لا مساره. و`TAURI_SIGNING_PRIVATE_KEY_PATH` المذكور في مخرجات `signer generate` لا يعمل في هذه النسخة من الـ CLI — يفشل البناء عند التحزيم برسالة «A public key has been found, but no private key».
+
+4. ولّد بيان التحديث: `npm run release:manifest`
+5. أنشئ release بالوسم `vX.Y.Z` وارفع فيه **المثبّت و`latest.json` معاً**.
+
+### مفتاح التوقيع — لا بديل عنه
+
+التطبيق يرفض أي حزمة تحديث لا يطابق توقيعها المفتاح العامّ المضمَّن في `tauri.conf.json`. هذا ما يمنع أن يُحقَن في أجهزة المستخدمين تحديثٌ مزوَّر.
+
+المفتاح الخاص في `~/.tauri/mufarrigh-updater.key` — **خارج المستودع، وفقدانه يعني أن كل من ثبّت التطبيق لن يستطيع التحديث مرة أخرى أبداً** ولا سبيل لإصلاح ذلك إلا بمطالبتهم بإعادة التثبيت يدوياً. خذ نسخة احتياطية منه في مكان آمن.
+
+**ملاحظة:** وُلّد المفتاح بلا كلمة مرور. إن أردت تشديد ذلك، ولّد بديلاً بكلمة مرور — لكن قبل أن يثبّت أحد الإصدار الأول، لأن تغيير المفتاح بعد النشر يكسر تحديثات من ثبّتوا.
+
+---
+
 ## الأوامر
 
 | الأمر | الوظيفة |
@@ -71,6 +102,7 @@ npm run tauri build
 | `npm run tauri dev` | تشغيل التطبيق للتطوير |
 | `npm run tauri build` | بناء المثبّت |
 | `npm run ffmpeg:fetch` | جلب الـ sidecar (يتخطّى إن وُجد؛ `-- --force` لإعادة الجلب) |
+| `npm run release:manifest` | توليد `latest.json` من مخرجات البناء |
 | `npm run lint` | فحص ESLint |
 | `npx tsc --noEmit` | فحص الأنواع |
 

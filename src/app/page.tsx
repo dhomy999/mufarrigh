@@ -1094,7 +1094,7 @@ export default function Home() {
 
           {/* تذييل */}
           <div className="text-center text-xs text-muted/50 py-4">
-            محرر الفيديو العربي — المرحلة 2 — مفتوح المصدر
+            المفرِّغ — تفريغ وتحرير بالنصّ — مفتوح المصدر
           </div>
         </div>
       </main>

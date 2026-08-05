@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "محرر الفيديو العربي",
+  "productName": "Mufarrigh",
   "version": "0.1.0",
-  "identifier": "com.arabicvideo.editor",
+  "identifier": "com.mufarrigh.app",
   "build": {
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "محرر الفيديو العربي",
+        "title": "المفرِّغ",
         "width": 1280,
         "height": 800,
         "minWidth": 900,
@@ -35,6 +35,7 @@
   "bundle": {
     "active": true,
     "targets": ["nsis", "app", "dmg", "deb", "rpm", "appimage"],
+    "createUpdaterArtifacts": true,
     "externalBin": ["binaries/ffmpeg"],
     "resources": ["../licenses/*", "../LICENSE", "../LICENSE-THIRD-PARTY.txt"],
     "licenseFile": "../LICENSE-THIRD-PARTY.txt",
@@ -56,6 +57,14 @@
     },
     "android": {
       "debugApplicationIdSuffix": ".debug"
+    }
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/dhomy999/mufarrigh/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDg5RUQ1NEVDMjUwRTRFMUQKUldRZFRnNGw3RlR0aVpKeHh5dlhGS0lYVmw2cVhhTitSWjJrVDF0OXI1bDVIeVp1MFpVUCtmQ3gK"
     }
   }
 }

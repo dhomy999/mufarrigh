@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-//  محرر الفيديو العربي — كود Rust الخلفي (Tauri Backend)
+//  المفرِّغ — كود Rust الخلفي (Tauri Backend)
 //  المرحلة 1: اختيار الفيديو + استخراج الصوت عبر FFmpeg
 // ═══════════════════════════════════════════════════════════════
 
@@ -359,6 +359,8 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .manage(TranscriptionCancel::default())
         .setup(|app| {
             if cfg!(debug_assertions) {
@@ -370,7 +372,7 @@ pub fn run() {
             }
 
             log::info!("╔═══════════════════════════════════════════╗");
-            log::info!("║   محرر الفيديو العربي — بدء التشغيل      ║");
+            log::info!("║   المفرِّغ — بدء التشغيل                   ║");
             log::info!("╚═══════════════════════════════════════════╝");
 
             Ok(())
