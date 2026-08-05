@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/*
+  ═══════════════════════════════════════════════════
+  إعدادات السمة (Theme) لتطبيق محرر الفيديو العربي
+  ═══════════════════════════════════════════════════
+*/
+
+:root {
+  /* الألوان الأساسية */
+  --background: #09090b;       /* خلفية داكنة */
+  --surface: #18181b;          /* أسطح البطاقات */
+  --surface-hover: #27272a;    /* تأثير المرور */
+  --foreground: #fafafa;       /* النص الأساسي */
+  --muted: #a1a1aa;            /* النص الثانوي */
+  --primary: #3b82f6;          /* الأزرق الأساسي */
+  --primary-hover: #2563eb;
+  --accent: #f59e0b;           /* اللون المميز (ذهبي) */
+  --danger: #ef4444;
+  --success: #22c55e;
+  --border: #27272a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-border: var(--border);
+
+  --font-sans: var(--font-cairo), "Cairo", "Segoe UI", Tahoma, sans-serif;
+}
+
+/* خط أساسي */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* شريط التمرير المخصص */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-hover);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* اختيار النص */
+::selection {
+  background: var(--primary);
+  color: white;
+}
+
+/* تحسين عرض الأرقام في السياق العربي */
+.nums-ar {
+  font-feature-settings: "tnum" off;
+}
+.nums-en {
+  font-feature-settings: "tnum" on;
+}
+
+/*
+  ═══════════════════════════════════════════════════
+  إبراز الكلمات منخفضة الثقة في محرر النصوص
+  «قلم تحديد» أسفل الكلمة — يتراكب مع خلفيات
+  التحديد/المرور وخط المدقّق المتعرّج دون تعارض.
+  نستخدم background-image (لا box-shadow) حتى لا يصطدم
+  بـ ring/shadow في Tailwind على الكلمة المحدّدة.
+  ═══════════════════════════════════════════════════
+*/
+.conf-low {
+  /* ثقة أقل من 50% — يطابق --danger */
+  background-image: linear-gradient(
+    to top,
+    rgba(239, 68, 68, 0.34) 0.45em,
+    transparent 0.45em
+  );
+}
+.conf-medium {
+  /* ثقة أقل من 80% — يطابق --accent */
+  background-image: linear-gradient(
+    to top,
+    rgba(245, 158, 11, 0.3) 0.45em,
+    transparent 0.45em
+  );
+}
