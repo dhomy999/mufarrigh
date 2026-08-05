@@ -230,22 +230,32 @@ pub fn check_ffmpeg() -> Result<String, AppError> {
     Ok(ffmpeg_path)
 }
 
+/// اسم ثنائي FFmpeg حسب المنصّة.
+///
+/// Tauri يجرّد لاحقة الـ target triple عند التحزيم، فالـ sidecar المسمّى
+/// `binaries/ffmpeg-x86_64-pc-windows-msvc.exe` يُثبَّت باسم `ffmpeg.exe`
+/// بجانب الثنائي الرئيسي (وداخل `Contents/MacOS/` في حزمة macOS).
+const FFMPEG_BIN: &str = if cfg!(windows) { "ffmpeg.exe" } else { "ffmpeg" };
+
 fn which_ffmpeg() -> Result<String, AppError> {
-    // 1) مسار مُضمَّن مع التطبيق (plan.md §5.5): نبحث في مجلد الموارد بجانب الثنائي
+    // 1) الـ sidecar المُضمَّن مع التطبيق — له الأولوية دائماً على نسخة النظام،
+    //    لأنه النسخة الوحيدة التي اختُبرت مع هذا الإصدار (plan.md §5.5).
     if let Ok(exe) = std::env::current_exe() {
         if let Some(dir) = exe.parent() {
             for candidate in &[
-                dir.join("ffmpeg"),
-                dir.join("binaries").join("ffmpeg"),
-                dir.join("resources").join("ffmpeg"),
+                dir.join(FFMPEG_BIN),
+                dir.join("binaries").join(FFMPEG_BIN),
+                dir.join("resources").join(FFMPEG_BIN),
             ] {
-                if candidate.exists() {
+                if candidate.is_file() {
+                    log::info!("استُخدم FFmpeg المُضمَّن: {}", candidate.display());
                     return Ok(candidate.to_string_lossy().to_string());
                 }
             }
         }
     }
-    // 2) مسار النظام (PATH)
+    // 2) مسار النظام (PATH) — احتياطي لبيئة التطوير ولمن يفضّل نسخته
+
     if let Ok(path) = which::which("ffmpeg") {
         return Ok(path.to_string_lossy().to_string());
     }

@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "ffmpeg:fetch": "node scripts/fetch-ffmpeg.mjs",
+    "bundle": "node scripts/fetch-ffmpeg.mjs && next build"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

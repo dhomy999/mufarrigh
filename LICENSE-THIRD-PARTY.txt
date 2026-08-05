@@ -1,0 +1,77 @@
+════════════════════════════════════════════════════════════════════════
+  محرر الفيديو العربي — رخص المكوّنات الخارجية
+  Arabic Video Editor — Third-Party Licenses
+════════════════════════════════════════════════════════════════════════
+
+هذا التطبيق نفسه مرخّص برخصة MIT (انظر ملف LICENSE).
+ويُوزَّع معه المكوّن التالي برخصة مختلفة:
+
+This application itself is licensed under the MIT License (see LICENSE).
+It is distributed together with the following component under a different
+license:
+
+────────────────────────────────────────────────────────────────────────
+1. FFmpeg  —  GNU General Public License, version 3 (or later)
+────────────────────────────────────────────────────────────────────────
+
+يتضمّن هذا المثبّت نسخة من FFmpeg (ملف ffmpeg التنفيذي) مبنية بخيار
+‎--enable-gpl‎ لأنها تعتمد على المرمّز libx264. لذلك يخضع هذا الثنائي
+لرخصة GPL v3، لا لرخصة MIT الخاصة بالتطبيق.
+
+This installer includes a copy of FFmpeg (the `ffmpeg` executable) built
+with --enable-gpl because it links libx264. That binary is therefore
+covered by the GPL v3, not by the application's MIT license.
+
+البناء المشحون / The exact build shipped:
+
+    الإصدار / Version : N-125954-g9862dd83b1-20260804
+    المصدر  / Source  : https://github.com/BtbN/FFmpeg-Builds
+    الأرشيف / Archive : ffmpeg-master-latest-win64-gpl.zip
+    SHA-256           : b9906eaab0eded20c3099321532c2c5720a8b897bf2d226d
+                        893f7723fd14fdbd
+
+  (البيانات المسجّلة آلياً عند الجلب موجودة في src-tauri/binaries/SOURCE.json)
+
+الحصول على الشيفرة المصدرية / Obtaining the source code:
+
+  شيفرة FFmpeg المقابلة لهذا البناء متاحة من مستودع FFmpeg الرسمي عند
+  الـ commit المذكور في سلسلة الإصدار أعلاه (‎9862dd83b1‎):
+
+      https://git.ffmpeg.org/ffmpeg.git
+      git clone https://git.ffmpeg.org/ffmpeg.git && git checkout 9862dd83b1
+
+  وسكربتات البناء المستخدمة متاحة في مستودع BtbN/FFmpeg-Builds أعلاه.
+  وبإمكان أي متلقٍّ لهذا التطبيق طلب نسخة من الشيفرة المصدرية المقابلة
+  من ناشر التطبيق خلال مدّة سريان هذا الإصدار.
+
+  Any recipient of this application may also request a copy of the
+  corresponding source code from the publisher.
+
+نصّ الرخصة الكامل / Full license text:
+
+  ملف licenses/GPL-3.0.txt المرافق لهذا التوزيع.
+  See the accompanying licenses/GPL-3.0.txt file.
+
+ملاحظة عن العلاقة بين المكوّنين / Note on the relationship:
+
+  التطبيق يستدعي ffmpeg كبرنامج منفصل عبر سطر الأوامر (عملية مستقلّة،
+  بلا ربط ولا اشتقاق)، ويُوزَّع معه على سبيل التجميع (aggregation).
+  ومع ذلك، من أراد توزيع التطبيق تحت شروط مغلقة المصدر فعليه استبدال
+  هذا البناء ببناء LGPL لا يتضمّن libx264.
+
+  The application invokes ffmpeg as a separate program over the command
+  line (separate process, no linking, not a derived work), and ships it
+  by mere aggregation. Anyone wishing to distribute this application
+  under closed-source terms should replace this build with an LGPL build
+  that excludes libx264.
+
+────────────────────────────────────────────────────────────────────────
+2. مكوّنات أخرى / Other components
+────────────────────────────────────────────────────────────────────────
+
+  Tauri, React, Next.js, Tailwind CSS, docx  — رخصتا MIT / Apache-2.0
+  وحزم Rust و npm المذكورة في Cargo.lock و package-lock.json، وجميعها
+  رخص متساهلة (MIT / Apache-2.0 / BSD).
+
+  All permissive licenses (MIT / Apache-2.0 / BSD). See Cargo.lock and
+  package-lock.json for the complete dependency list.
