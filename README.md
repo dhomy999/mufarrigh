@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div dir="rtl">
 
-## Getting Started
+# محرر الفيديو العربي
 
-First, run the development server:
+تطبيق سطح مكتب لتفريغ المحاضرات والدروس العربية وتحريرها **عبر النصّ**: تُفرَّغ المادة الصوتية أو المرئية آلياً، ثم يحرّر المستخدم النصّ — فينعكس التحرير على الفيديو أو يخرج مستنداً منسّقاً.
+
+مبني على Tauri 2 (Rust) + Next.js 16.
+
+---
+
+## المساران
+
+| | 📝 مسار النصّ | 🎬 مسار الفيديو |
+|---|---|---|
+| **الجمهور** | مفرّغو النصوص | صانعو المقاطع القصيرة |
+| **المخرجات** | DOCX / SRT | MP4 / Shorts / SRT |
+| **الواجهة** | `TextStudio` — فقرات متدفّقة | `VideoStudio` — شرائح وخطّ زمني |
+
+كلاهما يقرأ نفس المخزن (`TranscriptDocument` في `src/core/document/`). تفاصيل المعمارية في [`PLAN.md`](PLAN.md)، ووصف الميزات في [`FEATURES.md`](FEATURES.md).
+
+---
+
+## المتطلّبات
+
+- Node.js 20+
+- Rust 1.77.2+ ‏(`rustc` مطلوب في الـ PATH — السكربتات تستخرج منه الـ target triple)
+- [متطلّبات Tauri 2 لنظامك](https://v2.tauri.app/start/prerequisites/)
+
+**لا حاجة لتثبيت FFmpeg يدوياً** — يُجلب آلياً ويُشحن داخل التطبيق.
+
+---
+
+## التشغيل للتطوير
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run ffmpeg:fetch     # مرة واحدة: يجلب ثنائي FFmpeg إلى src-tauri/binaries/
+npm run tauri dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+في وضع التطوير، إن لم يوجد الـ sidecar يسقط التطبيق تلقائياً إلى نسخة FFmpeg المثبّتة على النظام (إن وُجدت).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## بناء المثبّت
 
-## Learn More
+```bash
+npm run tauri build
+```
 
-To learn more about Next.js, take a look at the following resources:
+`beforeBuildCommand` يشغّل `npm run bundle` الذي يجلب الـ sidecar قبل بناء الواجهة، فلا يخرج مثبّت بلا FFmpeg. المخرجات في `src-tauri/target/release/bundle/`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**على ويندوز يُبنى مثبّت NSIS فقط، وMSI مستبعَد عمداً:** أداة WiX3 التي يستخدمها Tauri لبناء MSI تكتب جداولها بترميز code page 1252، فتفشل على اسم المنتج العربي بالخطأ `LGHT0311`. أما NSIS فيدعم UTF-8، وله واجهة تثبيت عربية مفعّلة هنا مع مبدّل لغة. لإعادة MSI لاحقاً (للنشر المؤسّسي مثلاً) يلزم اسم منتج لاتيني أو ضبط `Codepage` في قالب WiX مخصّص.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### عن ثنائي FFmpeg
 
-## Deploy on Vercel
+يُجلب عبر [`scripts/fetch-ffmpeg.mjs`](scripts/fetch-ffmpeg.mjs) من [BtbN/FFmpeg-Builds](https://github.com/BtbN/FFmpeg-Builds).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **بناء GPL** لأن الترميز يستخدم `libx264` (`commands.rs:1606` و`:2730`)، وهو غير متاح في بناءات LGPL.
+- السكربت **يثبّت بصمة SHA-256 عند أول جلب** في `src-tauri/binaries/SOURCE.json` ويفرضها فيما بعد؛ فأي تبدّل في الملف المنزَّل يوقف البناء بدل أن يمرّ صامتاً. عند تحديث FFmpeg عمداً: احذف `SOURCE.json` ثم `npm run ffmpeg:fetch -- --force`.
+- macOS غير مدعوم آلياً في السكربت بعد — يُنزَّل الثنائي يدوياً ويوضع باسم `ffmpeg-<target-triple>` داخل `src-tauri/binaries/`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+⚠️ **قيد رخصي:** شحن بناء GPL يعني أن التطبيق يُوزَّع مجاناً/مفتوحاً. لتوزيع مغلق المصدر، استبدله ببناء LGPL وحوّل الترميز إلى `libopenh264`. التفاصيل في [`LICENSE-THIRD-PARTY.txt`](LICENSE-THIRD-PARTY.txt).
+
+---
+
+## الأوامر
+
+| الأمر | الوظيفة |
+|---|---|
+| `npm run tauri dev` | تشغيل التطبيق للتطوير |
+| `npm run tauri build` | بناء المثبّت |
+| `npm run ffmpeg:fetch` | جلب الـ sidecar (يتخطّى إن وُجد؛ `-- --force` لإعادة الجلب) |
+| `npm run lint` | فحص ESLint |
+| `npx tsc --noEmit` | فحص الأنواع |
+
+---
+
+## المفاتيح والخصوصية
+
+التطبيق يتطلّب مفاتيح API لخدمات التفريغ (Groq / OpenAI / Speechmatics) ونماذج النصّ. **يُرسَل صوت المستخدم إلى مزوّد التفريغ المختار** — وهذا إفصاح واجب لأي مستخدم.
+
+تُخزَّن المفاتيح محلياً، ويمكن تشفيرها بكلمة مرور عبر `src/lib/secure-storage.ts` ‏(AES-GCM + PBKDF2). التشفير اختياري حالياً وغير مفعّل افتراضياً.
+
+---
+
+## الرخصة
+
+التطبيق: MIT (انظر [`LICENSE`](LICENSE)).
+المكوّنات الخارجية — وأهمّها FFmpeg بترخيص GPL v3: [`LICENSE-THIRD-PARTY.txt`](LICENSE-THIRD-PARTY.txt).
+
+</div>

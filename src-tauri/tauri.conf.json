@@ -34,7 +34,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis", "app", "dmg", "deb", "rpm", "appimage"],
     "externalBin": ["binaries/ffmpeg"],
     "resources": ["../licenses/*", "../LICENSE", "../LICENSE-THIRD-PARTY.txt"],
     "licenseFile": "../LICENSE-THIRD-PARTY.txt",
@@ -47,6 +47,13 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
+    "windows": {
+      "nsis": {
+        "languages": ["Arabic", "English"],
+        "displayLanguageSelector": true,
+        "installMode": "currentUser"
+      }
+    },
     "android": {
       "debugApplicationIdSuffix": ".debug"
     }
